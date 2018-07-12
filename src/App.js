@@ -9,19 +9,10 @@ class App extends Component {
       {name: 'Roger', age: 27},
       {name: 'Leta', age: 27},
       {name: 'Brad', age: 28}
-    ]
+    ],
+    showPersons: false,
   }
 
-  switchNameHandler = (newName) => {
-   // console.log('switched')
-   this.setState({
-     persons: [
-       {name: newName, age: 27},
-       {name: 'Leta', age: 27},
-       {name: 'Brad', age: 28}
-     ]
-   })
-  }
 
   nameChangeHandler = (event) => {
     this.setState({
@@ -31,6 +22,17 @@ class App extends Component {
         {name: 'Brad', age: 28}
       ]
     })
+  }
+
+  deletePersonHandler = (personIndex) => {
+    const persons = [...this.state.persons]
+    persons.splice(personIndex, 1)
+    this.setState({persons: persons})
+  }
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons
+    this.setState({showPersons: !doesShow})
   }
 
   render() {
@@ -43,21 +45,28 @@ class App extends Component {
       cursor: 'pointer'
     }
 
+    let persons = null;
+
+    if(this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return <Person
+                click={() => this.deletePersonHandler(index)}
+                name={person.name}
+                age={person.age} />
+          })}
+        </div> 
+      )
+    }
+
     return (
       <div className="App">
         <h1>React App</h1>
-        <button style={style} onClick={() => this.switchNameHandler('ROGER')}>Switch Name</button>
-        <Person
-         name={this.state.persons[0].name} 
-         age={this.state.persons[0].age} />
-        <Person
-         name={this.state.persons[1].name}
-         age={this.state.persons[1].age}
-         click={this.switchNameHandler.bind(this, 'Rog')} 
-         changed={this.nameChangeHandler}>Hellooo</Person>
-        <Person
-         name={this.state.persons[2].name}
-         age={this.state.persons[2].age} />
+        <button style={style} onClick={this.togglePersonsHandler}>Toggle</button>
+        {persons}    
+        
+        
       </div>
 
     );
